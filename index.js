@@ -1,59 +1,59 @@
-// COLORS
-const mainColorPicker = document.querySelector('#color');
-const mainColorValue = document.querySelector('#color-value');
+let container = document.querySelector(".container");
+let QRcontainer = document.querySelector(".qr-code-container");
+let goBackBtn = document.querySelector("#edit")
 
-const backgroundColorPicker = document.querySelector('#bg-color');
-const backgroundColorValue = document.querySelector('#bg-color-value');
 
-const updateColor = e => {
-    const value = e.target.value;
-    mainColorValue.innerText = value;
-};
+let mainColorValue = document.querySelector(".maincolor");
+let backgroundColorValue  = document.querySelector(".bgcolor");
+console.log(backgroundColorValue);
 
-const updateBackgroundColor = e => {
-    const value = e.target.value;
-    backgroundColorValue.innerText = value;
-};
+let mainColorPicker = document.querySelector(".maincolorinput");
+let backgroundColorPicker  = document.querySelector(".bgcolorinput");
 
-const addColorPickerEventListeners = () => {
-    mainColorPicker.addEventListener('change', updateColor);
-    backgroundColorPicker.addEventListener('change', updateBackgroundColor);
-};
+mainColorPicker.addEventListener("input", () => {
+    const value = mainColorPicker.value;
+    mainColorValue.textContent = value;
+});
 
-addColorPickerEventListeners();
+backgroundColorPicker.addEventListener("input", () => {
+    const value = backgroundColorPicker.value;
+    backgroundColorValue.textContent = value;
+});
 
-// SLIDERS
-const sizeSlider = document.querySelector('#size');
-const sizeValue = document.querySelector('#size-value');
 
-const marginSlider = document.querySelector('#margin');
-const marginValue = document.querySelector('#margin-value');
+let sizeValue  = document.querySelector(".size");
+let marginValue  = document.querySelector(".space");
 
-const updateSize = e => {
-    const value = e.target.value;
-    sizeValue.innerText = `${value} x ${value}`;
-};
+let marginSlider  = document.querySelector(".rangeSpace");
+let sizeSlider  = document.querySelector(".rangeSize");
 
-const updateMargin = e => {
-    const value = e.target.value;
-    marginValue.innerText = `${value} px`;
-};
 
-const addSliderEventListeners = () => {
-    sizeSlider.addEventListener('change', updateSize);
-    marginSlider.addEventListener('change', updateMargin);
-};
+sizeSlider.addEventListener("input", () => {
+    const value = sizeSlider.value;
+    sizeValue.textContent = value;
+});
 
-addSliderEventListeners();
+marginSlider.addEventListener("input", () => {
+    const value = marginSlider.value;
+    marginValue.textContent = `${value} px`;
+});
 
-// URL / TEXT / DATA
-const dataInput = document.querySelector('#data');
-// FORMAT
+
+const dataInput = document.querySelector('.textpick');
 const imageFormat = document.querySelector('input[name="format"]:checked');
-// BUTTON
-const submitButton = document.querySelector('#cta');
+let GenerateBtn = document.querySelector(".generate-btn");
+let qrCodeImage = document.querySelector("#qr-code-image");
 
-const prepareParameters = params => {
+
+
+// Update the formattype variable on change
+document.querySelectorAll('.typeformat').forEach(radio => {
+    radio.addEventListener('change', () => {
+        formattype = document.querySelector('.typeformat:checked');
+    });
+});
+
+const prepareparameters = params => {
     const prepared = {
         data: params.data,
         size: `${params.size}x${params.size}`,
@@ -62,18 +62,11 @@ const prepareParameters = params => {
         qzone: params.qZone,
         format: params.format,
     };
-
     return prepared;
 };
 
-const settingsContainer = document.querySelector('#qr-code-settings');
-const resultsContainer = document.querySelector('#qr-code-result');
-const qrCodeImage = document.querySelector('#qr-code-image');
 
 const displayQrCode = imgUrl => {
-    settingsContainer.classList.add('flipped');
-    resultsContainer.classList.add('flipped');
-
     qrCodeImage.setAttribute('src', imgUrl);
 };
 
@@ -90,56 +83,28 @@ const getQrCode = parameters => {
     });
 };
 
-const showInputError = () => {
-    dataInput.classList.add('error');
-};
-
-const dataInputEventListener = () => {
-    dataInput.addEventListener('change', e => {
-        if (e.target.value !== '') {
-            dataInput.classList.remove('error');
-            submitButton.removeAttribute('disabled');
-        } else {
-            dataInput.classList.add('error');
-            submitButton.setAttribute('disabled', true);
-        }
-    });
-};
-
-dataInputEventListener();
-
 const onSubmit = () => {
-    const data = dataInput.value;
-    if (!data.length) {
-        return showInputError();
-    }
-
+    console.log("clicked");
+    const data = dataInput.value
     const color = mainColorPicker.value;
     const bgColor = backgroundColorPicker.value;
     const size = sizeSlider.value;
     const qZone = marginSlider.value;
     const format = imageFormat.value;
 
-    const parameters = prepareParameters({ data, color, bgColor, size, qZone, format });
+    const parameters = prepareparameters({ data, color, bgColor, size, qZone, format });
 
     getQrCode(parameters);
 };
 
-const addSubmitEventListener = () => {
-    submitButton.addEventListener('click', onSubmit);
-};
+GenerateBtn.addEventListener("click", onSubmit);
 
-addSubmitEventListener();
+GenerateBtn.onclick = () => {
+    container.style = "display:none";
+    QRcontainer.style = "display:flex";
+}
 
-const editButton = document.querySelector('#edit');
-
-const onEdit = () => {
-    settingsContainer.classList.remove('flipped');
-    resultsContainer.classList.remove('flipped');
-};
-
-const addEditEventListener = () => {
-    editButton.addEventListener('click', onEdit);
-};
-
-addEditEventListener();
+goBackBtn.onclick = () => {
+    container.style = "display:flex";
+    QRcontainer.style = "display:none";
+}
